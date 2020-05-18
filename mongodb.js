@@ -1,8 +1,14 @@
-const mongodb = require('mongodb');
-const MongoClient = mongodb.MongoClient;
+const {
+  MongoClient,
+  ObjectID,
+} = require('mongodb');
 
 const connectionURL = 'mongodb://127.0.0.1:27017';
 const databaseName = 'task-manager';
+
+const id = new ObjectID();
+console.log(id)
+console.log(id.toHexString().length)
 
 MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
   if (error) {
@@ -11,52 +17,21 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
 
   const db = client.db(databaseName);
 
-  // db.collection('users').insertOne({
-  //   name: 'Andres',
-  //   age: 27
-  // }, (error, result) => {
-  //   if (error) {
-  //     return console.log('Unable to insert user');
-  //   }
+  db.collection('tasks').insertOne({ description: 'suck tits', completed: false })
 
-  //   console.log(result.ops);
-  // });
-
-  db.collection('users').insertMany([
-    {
-      name: 'Jin',
-      age: 29,
-    },
-    {
-      name: 'Kevin',
-      age: 28,
-    }
-  ], (error, result) => {
+  db.collection('tasks').findOne({ _id: new ObjectID('5ec2cd1057eacf01be6d2cbf') }, (error, user) => {
     if (error) {
-      console.log('Failed to insert users');
+      return console.log('Unable to find task');
     }
-    
-    console.log(result.ops)
+
+    console.log(user);
   });
 
-  db.collection('tasks').insertMany([
-    {
-      description: 'Watch porn',
-      completed: true,
-    },
-    {
-      description: 'Make food',
-      completed: true,
-    },
-    {
-      description: 'Dig hole for basil plant',
-      completed: true,
-    },
-  ], (error, result) => {
+  db.collection('tasks').find({ completed: false }).toArray((error, tasks) => {
     if (error) {
-      console.log('Failed to insert tasks')
+      return console.log('Unable to find tasks');
     }
 
-    console.log(result.ops);
-  })
+    console.log(tasks)
+  });
 });
