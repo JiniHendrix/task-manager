@@ -17,21 +17,13 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
 
   const db = client.db(databaseName);
 
-  db.collection('tasks').insertOne({ description: 'suck tits', completed: false })
-
-  db.collection('tasks').findOne({ _id: new ObjectID('5ec2cd1057eacf01be6d2cbf') }, (error, user) => {
-    if (error) {
-      return console.log('Unable to find task');
+  db.collection('users').updateMany({
+    name: 'Kevin'
+  }, {
+    $inc: {
+      age: 200
     }
-
-    console.log(user);
-  });
-
-  db.collection('tasks').find({ completed: false }).toArray((error, tasks) => {
-    if (error) {
-      return console.log('Unable to find tasks');
-    }
-
-    console.log(tasks)
-  });
+  })
+    .then(user => console.log(user.result))
+    .catch(err => console.log(err))
 });
