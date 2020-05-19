@@ -100,6 +100,28 @@ app.get('/tasks/:id', async (req, res) => {
   }
 });
 
+app.patch('/tasks/:id', async (req, res) => {
+  const allowedUpdates = ['description', 'completed'];
+  const proposedUpdates = Object.keys(req.body);
+  const isValid = proposedUpdates.every(proposedUpdate => allowedUpdates.includes(proposedUpdate));
+
+  if (!isValid) {
+    return res.status(404).send('Invalid fields present');
+  }
+
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+
+    if (!task) {
+      return res.send(404);
+    }
+
+    res.send(task);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
