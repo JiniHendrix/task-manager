@@ -18,33 +18,41 @@ const User = mongoose.model('User', {
       }
     }
   },
+  password: {
+    type: String,
+    required: true,
+    minlength: 6,
+    trim: true,
+  }
 });
 
-const me = new User({
-  name: 'Jin',
-  age: 29,
-});
+// const me = new User({
+//   name: 'Jin',
+//   age: 29,
+//   password: 'nohomo'
+// });
 
-me.save()
-  .then(result => {
-    console.log(result);
-  })
-  .catch(error => {
-    console.log(error)
-  })
+// me.save()
+//   .then(result => {
+//     console.log(result);
+//   })
+//   .catch(error => {
+//     console.log(error)
+//   })
 
 const Task = mongoose.model('Task', {
   description: {
     type: String,
+    required: true,
   },
   completed: {
     type: Boolean,
+    default: false,
   },
 });
 
 const newTask = new Task({
   description: 'learn backend dev',
-  completed: 1
 });
 
 newTask.save()
