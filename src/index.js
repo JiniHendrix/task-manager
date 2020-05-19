@@ -53,7 +53,31 @@ app.post('/tasks', (req, res) => {
     .catch(err => {
       res.status(400).send(err);
     })
-})
+});
+
+app.get('/tasks', (req, res) => {
+  Task.find({})
+    .then(tasks => {
+      res.send(tasks);
+    })
+    .catch(e => {
+      res.send(500);
+    });
+});
+
+app.get('/tasks/:id', (req, res) => {
+  Task.findById({ _id: req.params.id })
+    .then(task => {
+      if (!task) {
+        return res.send(404);
+      }
+
+      res.send(task);
+    })
+    .catch(e => {
+      res.send(500);
+    });
+});
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
