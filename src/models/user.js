@@ -42,11 +42,22 @@ const userSchema = new mongoose.Schema({
   }]
 });
 
+userSchema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+
+  delete userObject.password;
+  delete userObject.tokens;
+
+  return userObject;
+}
+
 userSchema.methods.generateAuthToken = async function () {
-  const token = await jwt.sign({ _id: this._id.toString() }, 'mysecret');
+  const user = this;
+  const token = await jwt.sign({ _id: user._id.toString() }, 'mysecret');
   
-  this.tokens = this.tokens.concat({ token });
-  await this.save();
+  user.tokens = user.tokens.concat({ token });
+  await user.save();
 
   return token;
 }
