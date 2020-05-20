@@ -1,5 +1,6 @@
 const express = require('express');
 const { User } = require('../models');
+const auth = require('../middleware/auth');
 
 const router = new express.Router();
 
@@ -14,7 +15,7 @@ router.post('/users', async (req, res) => {
   }
 });
 
-router.get('/users', (req, res) => {
+router.get('/users', auth, (req, res) => {
   User.find({})
     .then(users => {
       res.send(users);
