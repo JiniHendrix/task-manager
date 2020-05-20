@@ -3,16 +3,15 @@ const { User } = require('../models');
 
 const router = new express.Router();
 
-router.post('/users', (req, res) => {
-  const newUser = new User(req.body);
+router.post('/users', async (req, res) => {
+  try {
+    const newUser = new User(req.body);
+    const token = await newUser.generateAuthToken();
 
-  newUser.save()
-    .then(() => {
-      res.status(201).send(newUser);
-    })
-    .catch(err => {
-      res.status(400).send(err);
-    })
+    res.status(201).send({ user: newUser, token })
+  } catch (e) {
+    res.status(400).send(e);
+  }
 });
 
 router.get('/users', (req, res) => {
@@ -86,6 +85,6 @@ router.post('/users/login', async (req, res) => {
   } catch (e) {
     res.status(400).send();
   }
-})
+});
 
 module.exports = router;
