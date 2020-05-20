@@ -15,6 +15,10 @@ router.post('/users', async (req, res) => {
   }
 });
 
+router.get('/users/me', auth, (req, res) => {
+  res.send(req.user);
+});
+
 router.get('/users', auth, (req, res) => {
   User.find({})
     .then(users => {
