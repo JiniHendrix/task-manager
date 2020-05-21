@@ -21,7 +21,7 @@ router.post('/tasks', auth, async (req, res) => {
 
 router.get('/tasks', auth, async (req, res) => {
   try {
-    const tasks = await Task.find({ owner: req.user._id });
+    const tasks = await req.user.populate('tasks').execPopulate();
 
     res.send(tasks);
   } catch (e) {
@@ -42,7 +42,7 @@ router.get('/tasks/:id', auth, async (req, res) => {
   }
 });
 
-router.patch('/tasks/:id', async (req, res) => {
+router.patch('/tasks/:id', auth, async (req, res) => {
   const allowedUpdates = ['description', 'completed'];
   const proposedUpdates = Object.keys(req.body);
   const isValid = proposedUpdates.every(proposedUpdate => allowedUpdates.includes(proposedUpdate));
@@ -52,15 +52,14 @@ router.patch('/tasks/:id', async (req, res) => {
   }
 
   try {
-    const task = await Task.findById(req.params.id);
-    proposedUpdates.forEach(key => task[key] = req.body[key]);
-
-    await task.save();
+    const task = await Task.findOne({ _id: req.params.id, owner: req.user._id });
     
     if (!task) {
       return res.send(404);
     }
 
+    proposedUpdates.forEach(key => task[key] = req.body[key]);
+    await task.save();
     res.send(task);
   } catch (e) {
     res.status(400).send(e);
