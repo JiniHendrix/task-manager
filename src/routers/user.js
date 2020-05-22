@@ -5,7 +5,7 @@ const auth = require('../middleware/auth');
 
 const router = new express.Router();
 const avatarUpload = multer({
-  dest: 'avatars',
+  storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
     if (file.originalname.match(/.(jpg|jpeg|png)$/)) {
       return cb(undefined, true);
@@ -108,9 +108,11 @@ router.delete('/users/me', auth, async (req, res) => {
   }
 });
 
-router.post('/users/me/avatar', avatarUpload.single('avatar'), (req, res) => {
+router.post('/users/me/avatar', auth, avatarUpload.single('avatar'), async (req, res) => {
+  req.user.avatar = req.file.buffer;
+  await req.user.save();
   res.send();
-}, (error, req, res, next) => {console.log('ERROR: ', error)
+}, (error, req, res, next) => {
   res.status(400).send({ error: error.message });
 });
 
