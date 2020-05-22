@@ -3,9 +3,7 @@ const { userRouter, taskRouter } = require('./routers');
 const sgMail = require('@sendgrid/mail');
 require('./db/mongoose');
 
-const sendgridApiKey = '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';
-
-sgMail.setApiKey(sendgridApiKey);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const app = express();
 const port = process.env.PORT || 3000;
