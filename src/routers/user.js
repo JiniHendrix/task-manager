@@ -27,7 +27,7 @@ router.post('/users', async (req, res) => {
 
     sendWelcomeEmail(newUser.email, newUser.name);
     res.status(201).send({ user: newUser, token });
-  } catch (e) {
+  } catch (e) {console.log('ERROR: ', e)
     res.status(400).send(e);
   }
 });
