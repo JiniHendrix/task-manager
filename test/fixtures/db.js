@@ -24,8 +24,9 @@ const userTwo = {
   }]
 }
 
+const taskOneId = new mongoose.Types.ObjectId();
 const taskOne = {
-  _id: new mongoose.Types.ObjectId(),
+  _id: taskOneId,
   description: 'First task',
   completed: false,
   owner: userOne._id
@@ -58,5 +59,8 @@ const setupDatabase = async () => {
 module.exports = {
   userOne,
   userOneId,
-  setupDatabase
+  userTwo,
+  userTwoId,
+  setupDatabase,
+  taskOneId
 }

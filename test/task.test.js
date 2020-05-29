@@ -1,7 +1,13 @@
 const request = require('supertest')
 const app = require('../src/app')
 const Task = require('../src/models/task')
-const { userOne, userOneId, setupDatabase } = require('./fixtures/db')
+const {
+  userOne,
+  userOneId,
+  userTwo,
+  taskOneId,
+  setupDatabase
+} = require('./fixtures/db')
 
 beforeEach(setupDatabase);
 
@@ -28,4 +34,14 @@ test('Should read tasks for user', async () => {
   const userOneTasks = await Task.find({ owner: userOneId })
   expect(userOneTasks.length).toEqual(response.body.length)
   expect(userOneTasks[0].name).toEqual(response.body[0].name)
+})
+
+test('Should not be able to delete other users\' tasks', async () => {
+  const response = await request(app)
+    .delete(`/tasks/${taskOneId}`)
+    .set('Authorization', `Bearer ${userTwo.tokens[0].token}`)
+    .expect(404);
+
+  const userOneTasks = await Task.find({ owner: userOneId })
+  expect(userOneTasks.length).toEqual(2)
 })

@@ -19,8 +19,6 @@ router.post('/tasks', auth, async (req, res) => {
   }
 });
 
-// GET /tasks?limit=10&skip20
-
 router.get('/tasks', auth, async (req, res) => {
   const match = {};
   const sort = {};
